@@ -1,0 +1,166 @@
+// !$*UTF8*$!
+{
+	089C165DFE840E0CC02AAC07 /* English */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {757, 673}}";
+			sepNavSelRange = "{180, 0}";
+			sepNavVisRect = "{{0, 0}, {757, 673}}";
+			sepNavWindowFrame = "{{19, -5}, {796, 746}}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Deployment;
+		activeExecutable = 4B0C8A5D0AAAD7F500E91F54 /* Tile World (Upgraded) */;
+		activeTarget = 4B0C8A1E0AAAD7F500E91F54 /* Tile World (Upgraded) */;
+		addToTargets = (
+			29B97326FDCFA39411CA2CEA /* Tile World */,
+			4B0C8A1E0AAAD7F500E91F54 /* Tile World (Upgraded) */,
+		);
+		codeSenseManager = 4B6C087B09C601C400EDCCA3 /* Code sense */;
+		executables = (
+			4B6C086709C6018E00EDCCA3 /* Tile World */,
+			4B0C8A5D0AAAD7F500E91F54 /* Tile World (Upgraded) */,
+		);
+		perUserDictionary = {
+			PBXPerProjectTemplateStateSaveDate = 178986977;
+			PBXWorkspaceStateSaveDate = 178986977;
+		};
+		sourceControlManager = 4B6C087A09C601C400EDCCA3 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	29B97326FDCFA39411CA2CEA /* Tile World */ = {
+		activeExec = 0;
+		executables = (
+			4B6C086709C6018E00EDCCA3 /* Tile World */,
+		);
+	};
+	4B0C8A1E0AAAD7F500E91F54 /* Tile World (Upgraded) */ = {
+		activeExec = 0;
+		executables = (
+			4B0C8A5D0AAAD7F500E91F54 /* Tile World (Upgraded) */,
+		);
+	};
+	4B0C8A5D0AAAD7F500E91F54 /* Tile World (Upgraded) */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "Tile World (Upgraded)";
+		sourceDirectories = (
+		);
+	};
+	4B180E8809E1E9E700EECAE6 /* icon.icns */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{19, -5}, {796, 746}}";
+		};
+	};
+	4B6C086709C6018E00EDCCA3 /* Tile World */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "Tile World";
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+	};
+	4B6C087A09C601C400EDCCA3 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	4B6C087B09C601C400EDCCA3 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	4B6C093F09C60B4900EDCCA3 /* comptime.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {757, 673}}";
+			sepNavSelRange = "{43, 0}";
+			sepNavVisRect = "{{0, 0}, {757, 673}}";
+			sepNavWindowFrame = "{{19, -5}, {796, 746}}";
+		};
+	};
+	4BB25FE60AAB20BC0076EBC1 /* mslogic.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {793, 31780}}";
+			sepNavSelRange = "{181, 0}";
+			sepNavVisRect = "{{0, 0}, {793, 737}}";
+			sepNavWindowFrame = "{{88, 0}, {832, 810}}";
+		};
+	};
+	4BB25FED0AAB20BC0076EBC1 /* sdloshw.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {740, 1848}}";
+			sepNavSelRange = "{2791, 0}";
+			sepNavVisRect = "{{0, 1485}, {740, 180}}";
+			sepNavWindowFrame = "{{42, 42}, {832, 810}}";
+		};
+	};
+	4BB260260AAB20EA0076EBC1 /* series.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {828, 10080}}";
+			sepNavSelRange = "{13356, 29}";
+			sepNavVisRect = "{{0, 5538}, {828, 194}}";
+		};
+	};
+	4BB2602B0AAB20EA0076EBC1 /* tworld.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {793, 24122}}";
+			sepNavSelRange = "{41649, 0}";
+			sepNavVisRect = "{{0, 21801}, {793, 737}}";
+			sepNavWindowFrame = "{{19, 63}, {832, 810}}";
+		};
+	};
+	F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {751, 673}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {751, 673}}";
+			sepNavWindowFrame = "{{19, -5}, {796, 746}}";
+		};
+	};
+	F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {757, 1176}}";
+			sepNavSelRange = "{932, 9}";
+			sepNavVisRect = "{{0, 1}, {757, 673}}";
+			sepNavWindowFrame = "{{14, 0}, {796, 746}}";
+		};
+	};
+}
