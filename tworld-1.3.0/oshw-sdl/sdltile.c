@@ -221,7 +221,7 @@ static SDL_Surface *newsurface(int w, int h, int transparency)
 				 0xFF000000, 0x00FF0000,
 				 0x0000FF00, 0x000000FF);
 #else
-	s = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA | SDL_RLEACCEL,
+	s = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_RLEACCEL,
 				 w, h, 32,
 				 0x000000FF, 0x0000FF00,
 				 0x00FF0000, 0xFF000000);
@@ -460,7 +460,7 @@ static SDL_Surface *extractkeyedtile(SDL_Surface *src,
     dest = newsurface(wimg, himg, TRUE);
     SDL_FillRect(dest, NULL, SDL_MapRGBA(dest->format,
 					 0, 0, 0, SDL_ALPHA_TRANSPARENT));
-    SDL_SetColorKey(src, SDL_SRCCOLORKEY, transpclr);
+    SDL_SetColorKey(src, transpclr);
     rect.x = ximg;
     rect.y = yimg;
     rect.w = dest->w;
@@ -473,7 +473,7 @@ static SDL_Surface *extractkeyedtile(SDL_Surface *src,
     SDL_FreeSurface(temp);
     if (!dest)
 	die("%s", SDL_GetError());
-    SDL_SetAlpha(dest, SDL_SRCALPHA | SDL_RLEACCEL, 0);
+    SDL_SetAlpha(dest, SDL_RLEACCEL, 0);
     return dest;
 }
 
