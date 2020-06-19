@@ -1626,21 +1626,23 @@ static int choosegameatstartup(gamespec *gs, startupdata const *start)
     int		n;
 
     if (!createserieslist(start->filename,
-			  &series.list, &series.count, &series.table))
-	return -1;
+                          &series.list, &series.count, &series.table)) {
+        return -1;
+    }
 
     free(start->filename);
 
     if (series.count <= 0) {
-	errmsg(NULL, "no level sets found");
-	return -1;
+        errmsg(NULL, "no level sets found");
+        return -1;
     }
 
     if (start->listseries) {
-	printtable(stdout, &series.table);
-	if (!series.count)
-	    puts("(no files)");
-	return 0;
+        printtable(stdout, &series.table);
+        if (!series.count) {
+            puts("(no files)");
+        }
+        return 0;
     }
 
     if (series.count == 1) {
@@ -1670,8 +1672,9 @@ static int choosegameatstartup(gamespec *gs, startupdata const *start)
 	if (start->listtimes) {
 	    if (!createtimelist(series.list,
 				series.list->ruleset == Ruleset_MS ? 10 : 100,
-				'0', NULL, NULL, &table))
-		return -1;
+                            '0', NULL, NULL, &table)) {
+            return -1;
+        }
 	    freeserieslist(series.list, series.count, &series.table);
 	    printtable(stdout, &table);
 	    freetimelist(NULL, &table);
@@ -1680,8 +1683,8 @@ static int choosegameatstartup(gamespec *gs, startupdata const *start)
     }
 
     if (!initializesystem()) {
-	errmsg(NULL, "cannot initialize program due to previous errors");
-	return -1;
+        errmsg(NULL, "cannot initialize program due to previous errors");
+        return -1;
     }
 
     return selectseriesandlevel(gs, &series, TRUE, NULL, start->levelnum);
