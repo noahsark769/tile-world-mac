@@ -437,11 +437,12 @@ static int retrievemousecommand(void)
 
     switch (mouseinfo.state) {
       case KS_PRESSED:
-	mouseinfo.state = KS_OFF;
-	if (mouseinfo.button == SDL_BUTTON_WHEELDOWN)
-	    return CmdNext;
-	if (mouseinfo.button == SDL_BUTTON_WHEELUP)
-	    return CmdPrev;
+        mouseinfo.state = KS_OFF;
+        // Commenting this out for now, not sure how to respond to mouse wheel events
+        //	if (mouseinfo.button == SDL_BUTTON_WHEELDOWN)
+        //	    return CmdNext;
+        //	if (mouseinfo.button == SDL_BUTTON_WHEELUP)
+        //	    return CmdPrev;
 	if (mouseinfo.button == SDL_BUTTON_LEFT) {
 	    n = windowmappos(mouseinfo.x, mouseinfo.y);
 	    if (n >= 0) {
@@ -559,10 +560,13 @@ int input(int wait)
  */
 int setkeyboardrepeat(int enable)
 {
-    if (enable)
-	return SDL_EnableKeyRepeat(500, 75) == 0;
-    else
-	return SDL_EnableKeyRepeat(0, 0) == 0;
+    // TODO: Prob reenable
+//    if (enable) {
+//        return SDL_EnableKeyRepeat(500, 75) == 0;
+//    } else {
+//        return SDL_EnableKeyRepeat(0, 0) == 0;
+//    }
+    return 0;
 }
 
 /* Turn joystick behavior mode on or off. In joystick-behavior mode,

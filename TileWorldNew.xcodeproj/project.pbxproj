@@ -230,6 +230,8 @@
 		A121BA86249D7B720026EDD7 /* SDL_touch.h in Headers */ = {isa = PBXBuildFile; fileRef = A121BA48249D7B710026EDD7 /* SDL_touch.h */; };
 		A121BA87249D7B720026EDD7 /* SDL_gamecontroller.h in Headers */ = {isa = PBXBuildFile; fileRef = A121BA49249D7B710026EDD7 /* SDL_gamecontroller.h */; };
 		A121BA89249D7B830026EDD7 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A121BA88249D7B830026EDD7 /* SDL2.framework */; };
+		A121BA8B249FB2B10026EDD7 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A121BA88249D7B830026EDD7 /* SDL2.framework */; };
+		A121BA8C249FB2B10026EDD7 /* SDL2.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A121BA88249D7B830026EDD7 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B2F367C604C7ADC700A80002 /* SDLMain.nib in Resources */ = {isa = PBXBuildFile; fileRef = B2F367C504C7ADC700A80002 /* SDLMain.nib */; };
 		F5A47AA101A0483001D3D55B /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A47A9D01A0482F01D3D55B /* SDLMain.h */; };
 		F5A47AA301A0483001D3D55B /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5A47A9E01A0483001D3D55B /* SDLMain.m */; };
@@ -242,6 +244,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				A121BA8C249FB2B10026EDD7 /* SDL2.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +398,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B0C8A530AAAD7F500E91F54 /* Cocoa.framework in Frameworks */,
+				A121BA8B249FB2B10026EDD7 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +417,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A121BA88249D7B830026EDD7 /* SDL2.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -509,7 +514,6 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A121BA88249D7B830026EDD7 /* SDL2.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -895,16 +899,12 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "\"/Library/Frameworks/SDL.framework/Headers\"";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-Tile_World__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SDL,
-				);
 				PRODUCT_NAME = "Tile World";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -930,16 +930,12 @@
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "\"/Library/Frameworks/SDL.framework/Headers\"";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-Tile_World__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SDL,
-				);
 				PRODUCT_NAME = "Tile World";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -962,15 +958,11 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = "\"/Library/Frameworks/SDL.framework/Headers\"";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Info-Tile_World__Upgraded_.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					SDL,
-				);
 				PRODUCT_NAME = TileWorldNew;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (

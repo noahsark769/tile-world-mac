@@ -247,6 +247,13 @@ static int layoutscreen(void)
     return TRUE;
 }
 
+static void draw(void) {
+    SDL_UpdateTexture(sdlg.texture, NULL, sdlg.screen->pixels, sdlg.screen->pitch);
+    SDL_RenderClear(sdlg.renderer);
+    SDL_RenderCopy(sdlg.renderer, sdlg.texture, NULL, NULL);
+    SDL_RenderPresent(sdlg.renderer);
+}
+
 /* Create or change the program's display surface.
  */
 static int createdisplay(void)
@@ -306,6 +313,7 @@ void cleardisplay(void)
     SDL_FillRect(sdlg.screen, NULL, bkgndcolor(sdlg.textclr));
     fullredraw = TRUE;
     mapvieworigin = -1;
+    draw();
 }
 
 /*
@@ -378,6 +386,7 @@ static void displaymsg(int update)
 //    if (update)
 //	SDL_UpdateRect(sdlg.screen, messageloc.x, messageloc.y,
 //				    messageloc.w, messageloc.h);
+    draw();
 }
 
 /* Change the current message-display message. msecs gives the number
@@ -637,6 +646,7 @@ static int displayprompticon(int completed)
     SDL_BlitSurface(prompticons, &src, sdlg.screen, &promptloc);
 //    SDL_UpdateRect(sdlg.screen, promptloc.x, promptloc.y,
 //				promptloc.w, promptloc.h);
+    draw();
     return TRUE;
 }
 
@@ -717,10 +727,7 @@ int displaygame(void const *state, int timeleft, int besttime)
 //			sizeof locrects / sizeof *locrects, locrects);
     }
 
-    SDL_UpdateTexture(sdlg.texture, NULL, sdlg.screen->pixels, sdlg.screen->pitch);
-    SDL_RenderClear(sdlg.renderer);
-    SDL_RenderCopy(sdlg.renderer, sdlg.texture, NULL, NULL);
-    SDL_RenderPresent(sdlg.renderer);
+    draw();
 
     return TRUE;
 }
@@ -754,6 +761,7 @@ int displayendmessage(int basescore, int timescore, long totalscore,
 //	SDL_UpdateRect(sdlg.screen, hintloc.x, hintloc.y,
 //				    hintloc.w, hintloc.h);
     }
+    draw();
     return displayprompticon(completed);
 }
 
@@ -784,6 +792,7 @@ int displaytable(char const *title, tablespec const *table, int completed)
 
     displayprompticon(completed);
 //    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+    draw();
     return TRUE;
 }
 
@@ -841,6 +850,7 @@ int displaytiletable(char const *title,
     displayprompticon(completed);
 
 //    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+    draw();
 
     return TRUE;
 }
@@ -916,6 +926,7 @@ int displaylist(char const *title, void const *tab, int *idx,
 	for ( ; j < topitem + linecount && j < itemcount ; ++j)
 	    drawtablerow(table, colstmp, &n, j == index ? PT_HILIGHT : 0);
 //	SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+        draw();
 
 	n = SCROLL_NOP;
     } while ((*inputcallback)(&n));
@@ -976,6 +987,7 @@ int displayinputprompt(char const *prompt, char *input, int maxlen,
 	puttext(&inputrect, input, len + 1, PT_CENTER);
 	input[len] = '\0';
 //	SDL_UpdateRect(sdlg.screen, area.x, area.y, area.w, area.h);
+        draw();
 	ch = (*inputcallback)();
 	if (ch == '\n' || ch < 0)
 	    break;
