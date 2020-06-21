@@ -237,9 +237,6 @@ static SDL_Surface *newsurface(int w, int h, int transparency)
     if (!s)
 	die("couldn't create surface: %s", SDL_GetError());
     if (!transparency && sdlg.screen->format->palette) {
-        // TODO: do we need to comment this back in?
-        //	SDL_SetColors(s, sdlg.screen->format->palette->colors,
-        //		      0, sdlg.screen->format->palette->ncolors);
         SDL_SetPaletteColors(s->format->palette, sdlg.screen->format->palette->colors, 0, sdlg.screen->format->palette->ncolors);
     }
     return s;
@@ -472,14 +469,10 @@ static SDL_Surface *extractkeyedtile(SDL_Surface *src,
     SDL_SetColorKey(src, 0, 0);
 
     temp = dest;
-    // TODO: Need to comment back in?
     dest = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, SDL_RLEACCEL);
-//    dest = SDL_DisplayFormatAlpha(temp);
     SDL_FreeSurface(temp);
     if (!dest)
 	die("%s", SDL_GetError());
-    // TODO: Need to comment back in?
-//    SDL_SetAlpha(dest, SDL_RLEACCEL, 0);
     return dest;
 }
 
@@ -509,10 +502,7 @@ static SDL_Surface *extractemptytile(SDL_Surface *src,
     SDL_SetColorKey(src, 0, 0);
 
     temp = dest;
-    // TODO: Need to comment back in?
-//    SDL_SetColorKey
     dest = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, SDL_RLEACCEL);
-//    dest = SDL_DisplayFormat(temp);
     SDL_FreeSurface(temp);
     if (!dest)
 	die("%s", SDL_GetError());
@@ -564,14 +554,10 @@ static SDL_Surface *extractmaskedtile(SDL_Surface *src,
 	SDL_UnlockSurface(dest);
 
     temp = dest;
-    // TODO: Reenable?
     dest = SDL_ConvertSurfaceFormat(temp, SDL_PIXELFORMAT_RGBA8888, SDL_RLEACCEL);
-//    dest = SDL_DisplayFormatAlpha(temp);
     SDL_FreeSurface(temp);
     if (!dest)
 	die("%s", SDL_GetError());
-    // TODO: Reenable? I think these are passed above now
-//    SDL_SetAlpha(dest, SDL_SRCALPHA | SDL_RLEACCEL, 0);
     return dest;
 }
 
@@ -1093,9 +1079,6 @@ int loadtileset(char const *filename, int complain)
 	return FALSE;
     }
     if (tiles->format->palette && sdlg.screen->format->palette) {
-        // TODO: reenable?
-//	SDL_SetColors(sdlg.screen, tiles->format->palette->colors,
-//		      0, tiles->format->palette->ncolors);
         SDL_SetPaletteColors(sdlg.screen->format->palette, tiles->format->palette->colors, 0, tiles->format->palette->ncolors);
     }
 
