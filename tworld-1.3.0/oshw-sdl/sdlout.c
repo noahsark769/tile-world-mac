@@ -253,21 +253,49 @@ static int createdisplay(void)
 {
     int	flags;
 
-    if (sdlg.screen) {
-	SDL_FreeSurface(sdlg.screen);
-	sdlg.screen = NULL;
+    if (sdlg.window) {
+        SDL_DestroyWindow(sdlg.window);
+        SDL_DestroyRenderer(sdlg.renderer);
+        SDL_DestroyTexture(sdlg.texture);
+        sdlg.window = NULL;
     }
-    flags = SDL_SWSURFACE | SDL_ANYFORMAT;
-    if (fullscreen)
-	flags |= SDL_FULLSCREEN;
-    if (!(sdlg.screen = SDL_SetVideoMode(screenw, screenh, 32, flags))) {
-	errmsg(NULL, "cannot open %dx%d display: %s\n",
-		     screenw, screenh, SDL_GetError());
-	return FALSE;
+
+    flags = SDL_SWSURFACE | SDL_WINDOW_OPENGL;
+    if (fullscreen) {
+        flags |= SDL_WINDOW_FULLSCREEN;
     }
-    if (sdlg.screen->w != screenw || sdlg.screen->h != screenh)
-	warn("requested a %dx%d display, got %dx%d instead",
-	     sdlg.screen->w, sdlg.screen->h);
+
+//    SDL_CreateWindowAndRenderer(screenw, screenw, flags, &sdlg.window, &sdlg.renderer);
+
+    if (!(sdlg.window = SDL_CreateWindow("Tile World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screenw, screenh, flags))) {
+        errmsg(NULL, "cannot open %dx%d display: %s\n",
+                 screenw, screenh, SDL_GetError());
+        return FALSE;
+    }
+    sdlg.renderer = SDL_CreateRenderer(sdlg.window, -1, 0);
+    sdlg.screen = SDL_CreateRGBSurface(0, screenw, screenh, 32,
+                                                                0x00FF0000,
+                                                                0x0000FF00,
+                                                                0x000000FF,
+                                                                0xFF000000);
+    sdlg.texture = SDL_CreateTexture(sdlg.renderer,
+        SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING,
+        screenw, screenh);
+
+//    if (!(sdlg.screen = SDL_SetVideoMode(screenw, screenh, 32, flags))) {
+//        errmsg(NULL, "cannot open %dx%d display: %s\n",
+//                 screenw, screenh, SDL_GetError());
+//        return FALSE;
+//    }
+
+    int w;
+    int h;
+    SDL_GetWindowSize(sdlg.window, &w, &h);
+    if (w != screenw || h != screenh) {
+        warn("requested a %dx%d display, got %dx%d instead",
+             w, h);
+    }
     return TRUE;
 }
 
@@ -347,9 +375,9 @@ static void displaymsg(int update)
 	    f |= PT_DIM;
     }
     puttext(&messageloc, msgdisplay.msg, msgdisplay.msglen, f);
-    if (update)
-	SDL_UpdateRect(sdlg.screen, messageloc.x, messageloc.y,
-				    messageloc.w, messageloc.h);
+//    if (update)
+//	SDL_UpdateRect(sdlg.screen, messageloc.x, messageloc.y,
+//				    messageloc.w, messageloc.h);
 }
 
 /* Change the current message-display message. msecs gives the number
@@ -607,8 +635,8 @@ static int displayprompticon(int completed)
     src.w = PROMPTICONW;
     src.h = PROMPTICONH;
     SDL_BlitSurface(prompticons, &src, sdlg.screen, &promptloc);
-    SDL_UpdateRect(sdlg.screen, promptloc.x, promptloc.y,
-				promptloc.w, promptloc.h);
+//    SDL_UpdateRect(sdlg.screen, promptloc.x, promptloc.y,
+//				promptloc.w, promptloc.h);
     return TRUE;
 }
 
@@ -682,12 +710,18 @@ int displaygame(void const *state, int timeleft, int besttime)
     displayinfo(state, timeleft, besttime);
     displaymsg(FALSE);
     if (fullredraw) {
-	SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+//	SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
 	fullredraw = FALSE;
     } else {
-	SDL_UpdateRects(sdlg.screen,
-			sizeof locrects / sizeof *locrects, locrects);
+//	SDL_UpdateRects(sdlg.screen,
+//			sizeof locrects / sizeof *locrects, locrects);
     }
+
+    SDL_UpdateTexture(sdlg.texture, NULL, sdlg.screen->pixels, sdlg.screen->pitch);
+    SDL_RenderClear(sdlg.renderer);
+    SDL_RenderCopy(sdlg.renderer, sdlg.texture, NULL, NULL);
+    SDL_RenderPresent(sdlg.renderer);
+
     return TRUE;
 }
 
@@ -717,8 +751,8 @@ int displayendmessage(int basescore, int timescore, long totalscore,
 	puttext(&rect, decimal(basescore, 5), -1, PT_RIGHT | PT_UPDATERECT);
 	puttext(&rect, decimal(fullscore, 5), -1, PT_RIGHT | PT_UPDATERECT);
 	puttext(&rect, decimal(totalscore, 7), -1, PT_RIGHT | PT_UPDATERECT);
-	SDL_UpdateRect(sdlg.screen, hintloc.x, hintloc.y,
-				    hintloc.w, hintloc.h);
+//	SDL_UpdateRect(sdlg.screen, hintloc.x, hintloc.y,
+//				    hintloc.w, hintloc.h);
     }
     return displayprompticon(completed);
 }
@@ -749,7 +783,7 @@ int displaytable(char const *title, tablespec const *table, int completed)
     free(cols);
 
     displayprompticon(completed);
-    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+//    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
     return TRUE;
 }
 
@@ -806,7 +840,7 @@ int displaytiletable(char const *title,
 
     displayprompticon(completed);
 
-    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+//    SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
 
     return TRUE;
 }
@@ -881,7 +915,7 @@ int displaylist(char const *title, void const *tab, int *idx,
 	    drawtablerow(table, NULL, &n, 0);
 	for ( ; j < topitem + linecount && j < itemcount ; ++j)
 	    drawtablerow(table, colstmp, &n, j == index ? PT_HILIGHT : 0);
-	SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
+//	SDL_UpdateRect(sdlg.screen, 0, 0, 0, 0);
 
 	n = SCROLL_NOP;
     } while ((*inputcallback)(&n));
@@ -941,7 +975,7 @@ int displayinputprompt(char const *prompt, char *input, int maxlen,
 	input[len] = '_';
 	puttext(&inputrect, input, len + 1, PT_CENTER);
 	input[len] = '\0';
-	SDL_UpdateRect(sdlg.screen, area.x, area.y, area.w, area.h);
+//	SDL_UpdateRect(sdlg.screen, area.x, area.y, area.w, area.h);
 	ch = (*inputcallback)();
 	if (ch == '\n' || ch < 0)
 	    break;

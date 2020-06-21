@@ -42,10 +42,6 @@ enum { KS_OFF = 0,		/* key is not currently pressed */
        KS_count
 };
 
-/* The complete array of key states.
- */
-static char		keystates[SDLK_LAST];
-
 /* The last mouse action.
  */
 static mouseaction	mouseinfo;
@@ -54,20 +50,78 @@ static mouseaction	mouseinfo;
  */
 static int		joystickstyle = FALSE;
 
+typedef enum GameKeyCommand {
+    Up
+    Left,
+    Down,
+    Right,
+    KP8,
+    KP4,
+    KP2,
+    KP6,
+    Q,
+    CtrlP,
+    CtrlR,
+    CtrlN,
+    CtrlG,
+    ShiftQ,
+    PageUp,
+    P,
+    R,
+    N,
+    PageDown,
+    Backspace,
+    QuestionMark,
+    F1,
+    O,
+    ShiftO,
+    Tab,
+    ShiftTab,
+    X,
+    ShiftX,
+    S,
+    CtrlS,
+    ShiftV,
+    V,
+    Return,
+    Enter,
+    Space,
+    D,
+    ShiftD,
+    UpAlternate,
+    LeftAlternate,
+    DownAlternate,
+    RightAlternate,
+    Home,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    Quit,
+    AltF4,
+    GameKeyCommandSize
+} GameKeyCommand;
+
 /* The complete list of key commands recognized by the game while
  * playing. hold is TRUE for keys that are to be forced to repeat.
  * shift, ctl and alt are positive if the key must be down, zero if
  * the key must be up, or negative if it doesn't matter.
  */
-static keycmdmap const gamekeycmds[] = {        
+static keycmdmap const gamekeycmds[] = {
+    /* Key                     Shift, Ctrl, Alt, Command,             Hold */
     { SDLK_UP,                    0,  0,  0,   CmdNorth,              TRUE },
     { SDLK_LEFT,                  0,  0,  0,   CmdWest,               TRUE },
     { SDLK_DOWN,                  0,  0,  0,   CmdSouth,              TRUE },
     { SDLK_RIGHT,                 0,  0,  0,   CmdEast,               TRUE },
-    { SDLK_KP8,                   0,  0,  0,   CmdNorth,              TRUE },
-    { SDLK_KP4,                   0,  0,  0,   CmdWest,               TRUE },
-    { SDLK_KP2,                   0,  0,  0,   CmdSouth,              TRUE },
-    { SDLK_KP6,                   0,  0,  0,   CmdEast,               TRUE },
+    { SDLK_KP_8,                   0,  0,  0,   CmdNorth,              TRUE },
+    { SDLK_KP_4,                   0,  0,  0,   CmdWest,               TRUE },
+    { SDLK_KP_2,                   0,  0,  0,   CmdSouth,              TRUE },
+    { SDLK_KP_6,                   0,  0,  0,   CmdEast,               TRUE },
     { 'q',                        0,  0,  0,   CmdQuitLevel,          FALSE },
     { 'p',                        0, +1,  0,   CmdPrevLevel,          FALSE },
     { 'r',                        0, +1,  0,   CmdSameLevel,          FALSE },
@@ -116,6 +170,47 @@ static keycmdmap const gamekeycmds[] = {
     { 0, 0, 0, 0, 0, 0 }
 };
 
+typedef enum InputKeyCommand {
+    InputKeyCommandUp,
+    InputKeyCommandLeft,
+    InputKeyCommandDown,
+    InputKeyCommandRight,
+    InputKeyCommandBackspace,
+    InputKeyCommandSpace,
+    InputKeyCommandReturn,
+    InputKeyCommandEnter,
+    InputKeyCommandEscape,
+    InputKeyCommandA,
+    InputKeyCommandB,
+    InputKeyCommandC,
+    InputKeyCommandD,
+    InputKeyCommandE,
+    InputKeyCommandF,
+    InputKeyCommandG,
+    InputKeyCommandH,
+    InputKeyCommandI,
+    InputKeyCommandJ,
+    InputKeyCommandK,
+    InputKeyCommandL,
+    InputKeyCommandM,
+    InputKeyCommandN,
+    InputKeyCommandO,
+    InputKeyCommandP,
+    InputKeyCommandQ,
+    InputKeyCommandR,
+    InputKeyCommandS,
+    InputKeyCommandT,
+    InputKeyCommandU,
+    InputKeyCommandV,
+    InputKeyCommandW,
+    InputKeyCommandX,
+    InputKeyCommandY,
+    InputKeyCommandZ,
+    InputKeyCommandQuit,
+    InputKeyCommandF4,
+    InputKeyCommandSize
+} InputKeyCommand;
+
 /* The list of key commands recognized when the program is obtaining
  * input from the user.
  */
@@ -160,6 +255,10 @@ static keycmdmap const inputkeycmds[] = {
     { 0, 0, 0, 0, 0, 0 }
 };
 
+/* The complete array of key states.
+ */
+static char keystates[GameKeyCommandSize];
+
 /* The current map of key commands.
  */
 static keycmdmap const *keycmds = gamekeycmds;
@@ -194,19 +293,19 @@ static void _keyeventcallback(int scancode, int down)
       case SDLK_NUMLOCK:
       case SDLK_CAPSLOCK:
       case SDLK_MODE:
-	keystates[scancode] = down ? KS_ON : KS_OFF;
-	break;
+        keystates[scancode] = down ? KS_ON : KS_OFF;
+        break;
       default:
-	if (scancode < SDLK_LAST) {
-	    if (down) {
-		keystates[scancode] = keystates[scancode] == KS_OFF ?
-						KS_PRESSED : KS_REPEATING;
-	    } else {
-		keystates[scancode] = keystates[scancode] == KS_PRESSED ?
-						KS_STRUCK : KS_OFF;
-	    }
-	}
-	break;
+//        if (scancode < SDLK_LAST) {
+            if (down) {
+            keystates[scancode] = keystates[scancode] == KS_OFF ?
+                            KS_PRESSED : KS_REPEATING;
+            } else {
+            keystates[scancode] = keystates[scancode] == KS_PRESSED ?
+                            KS_STRUCK : KS_OFF;
+            }
+//        }
+        break;
     }
 }
 
@@ -218,12 +317,15 @@ static void restartkeystates(void)
     int		count, n;
 
     memset(keystates, KS_OFF, sizeof keystates);
-    keyboard = SDL_GetKeyState(&count);
-    if (count > SDLK_LAST)
-	count = SDLK_LAST;
-    for (n = 0 ; n < count ; ++n)
-	if (keyboard[n])
-	    _keyeventcallback(n, TRUE);
+    keyboard = SDL_GetKeyboardState(&count);
+//    if (count > SDLK_LAST) {
+//        count = SDLK_LAST;
+//    }
+    for (n = 0 ; n < count ; ++n) {
+        if (keyboard[n]) {
+            _keyeventcallback(n, TRUE);
+        }
+    }
 }
 
 /* Update the key states. This is done at the start of each polling
@@ -455,7 +557,7 @@ int _sdlinputinitialize(void)
     mergeable[CmdWest] = mergeable[CmdEast] = CmdNorth | CmdSouth;
 
     setkeyboardrepeat(TRUE);
-    SDL_EnableUNICODE(TRUE);
+//    SDL_EnableUNICODE(TRUE);
     return TRUE;
 }
 

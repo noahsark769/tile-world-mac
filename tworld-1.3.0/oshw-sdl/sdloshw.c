@@ -36,11 +36,11 @@ static void _eventupdate(int wait)
 	    if (windowmappos(mouselastx, mouselasty) < 0)
 		SDL_ShowCursor(SDL_DISABLE);
 	    keyeventcallback(event.key.keysym.sym, TRUE);
-	    if (event.key.keysym.unicode
-			&& event.key.keysym.unicode != event.key.keysym.sym) {
-		keyeventcallback(event.key.keysym.unicode, TRUE);
-		keyeventcallback(event.key.keysym.unicode, FALSE);
-	    }
+//	    if (event.key.keysym.unicode
+//			&& event.key.keysym.unicode != event.key.keysym.sym) {
+//		keyeventcallback(event.key.keysym.unicode, TRUE);
+//		keyeventcallback(event.key.keysym.unicode, FALSE);
+//	    }
 	    break;
 	  case SDL_KEYUP:
 	    if (windowmappos(mouselastx, mouselasty) < 0)
