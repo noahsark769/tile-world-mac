@@ -30,17 +30,17 @@ static void _eventupdate(int wait)
     if (wait)
 	SDL_WaitEvent(NULL);
     SDL_PumpEvents();
-    while (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_ALLEVENTS)) {
+    while (SDL_PeepEvents(&event, 1, SDL_GETEVENT, SDL_FIRSTEVENT, SDL_LASTEVENT)) {
 	switch (event.type) {
 	  case SDL_KEYDOWN:
 	    if (windowmappos(mouselastx, mouselasty) < 0)
 		SDL_ShowCursor(SDL_DISABLE);
 	    keyeventcallback(event.key.keysym.sym, TRUE);
-	    if (event.key.keysym.unicode
-			&& event.key.keysym.unicode != event.key.keysym.sym) {
-		keyeventcallback(event.key.keysym.unicode, TRUE);
-		keyeventcallback(event.key.keysym.unicode, FALSE);
-	    }
+//	    if (event.key.keysym.unicode
+//			&& event.key.keysym.unicode != event.key.keysym.sym) {
+//		keyeventcallback(event.key.keysym.unicode, TRUE);
+//		keyeventcallback(event.key.keysym.unicode, FALSE);
+//	    }
 	    break;
 	  case SDL_KEYUP:
 	    if (windowmappos(mouselastx, mouselasty) < 0)
@@ -74,10 +74,10 @@ void setsubtitle(char const *subtitle)
     char	buf[270];
 
     if (subtitle && *subtitle) {
-	sprintf(buf, "Tile World - %.255s", subtitle);
-	SDL_WM_SetCaption(buf, "Tile World");
+        sprintf(buf, "Tile World - %.255s", subtitle);
+        SDL_SetWindowTitle(sdlg.window, buf);
     } else {
-	SDL_WM_SetCaption("Tile World", "Tile World");
+        SDL_SetWindowTitle(sdlg.window, "Tile World");
     }
 }
 
@@ -125,7 +125,8 @@ int oshwinitialize(int silence, int soundbufsize,
 
 /* The real main().
  */
-int main(int argc, char *argv[])
+//extern SDLMAIN_DECLSPEC int SDL_main(int argc, char *argv[]);
+int SDL_main(int argc, char *argv[])
 {
     return tworld(argc, argv);
 }

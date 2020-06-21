@@ -9,10 +9,79 @@
 #include	"sdlgen.h"
 #include	"../defs.h"
 
+typedef enum TileWorldScanCode {
+    TileWorldScanCodeNull = 0,
+    TileWorldScanCodeUp,
+    TileWorldScanCodeLeft,
+    TileWorldScanCodeDown,
+    TileWorldScanCodeRight,
+    TileWorldScanCodeKP8,
+    TileWorldScanCodeKP4,
+    TileWorldScanCodeKP2,
+    TileWorldScanCodeKP6,
+    TileWorldScanCodeA,
+    TileWorldScanCodeB,
+    TileWorldScanCodeC,
+    TileWorldScanCodeD,
+    TileWorldScanCodeE,
+    TileWorldScanCodeF,
+    TileWorldScanCodeG,
+    TileWorldScanCodeH,
+    TileWorldScanCodeI,
+    TileWorldScanCodeJ,
+    TileWorldScanCodeK,
+    TileWorldScanCodeL,
+    TileWorldScanCodeM,
+    TileWorldScanCodeN,
+    TileWorldScanCodeO,
+    TileWorldScanCodeP,
+    TileWorldScanCodeQ,
+    TileWorldScanCodeR,
+    TileWorldScanCodeS,
+    TileWorldScanCodeT,
+    TileWorldScanCodeU,
+    TileWorldScanCodeV,
+    TileWorldScanCodeW,
+    TileWorldScanCodeX,
+    TileWorldScanCodeY,
+    TileWorldScanCodeZ,
+    TileWorldScanCodePageUp,
+    TileWorldScanCodePageDown,
+    TileWorldScanCodeBackspace,
+    TileWorldScanCodeQuestionMark,
+    TileWorldScanCodeEscape,
+    TileWorldScanCodeTab,
+    TileWorldScanCodeReturn,
+    TileWorldScanCodeEnter,
+    TileWorldScanCodeSpace,
+    TileWorldScanCodeHome,
+    TileWorldScanCodeF1,
+    TileWorldScanCodeF2,
+    TileWorldScanCodeF3,
+    TileWorldScanCodeF4,
+    TileWorldScanCodeF5,
+    TileWorldScanCodeF6,
+    TileWorldScanCodeF7,
+    TileWorldScanCodeF8,
+    TileWorldScanCodeF9,
+    TileWorldScanCodeF10,
+    TileWorldScanCodeQuit,
+    TileWorldScanCodeLeftShift,
+    TileWorldScanCodeRightShift,
+    TileWorldScanCodeLeftControl,
+    TileWorldScanCodeRightControl,
+    TileWorldScanCodeLeftAlt,
+    TileWorldScanCodeRightAlt,
+    TileWorldScanCodeCapsLock,
+    TileWorldScanCodeMode,
+    TileWorldScanCodeUnknown,
+    TileWorldScanCode_count
+} TileWorldScanCode;
+
 /* Structure describing a mapping of a key event to a game command.
  */
 typedef	struct keycmdmap {
-    int		scancode;	/* the key's scan code */
+    TileWorldScanCode scancode;	/* the key's scan code */
     int		shift;		/* the shift key's state */
     int		ctl;		/* the ctrl key's state */
     int		alt;		/* the alt keys' state */
@@ -42,10 +111,6 @@ enum { KS_OFF = 0,		/* key is not currently pressed */
        KS_count
 };
 
-/* The complete array of key states.
- */
-static char		keystates[SDLK_LAST];
-
 /* The last mouse action.
  */
 static mouseaction	mouseinfo;
@@ -59,106 +124,111 @@ static int		joystickstyle = FALSE;
  * shift, ctl and alt are positive if the key must be down, zero if
  * the key must be up, or negative if it doesn't matter.
  */
-static keycmdmap const gamekeycmds[] = {        
-    { SDLK_UP,                    0,  0,  0,   CmdNorth,              TRUE },
-    { SDLK_LEFT,                  0,  0,  0,   CmdWest,               TRUE },
-    { SDLK_DOWN,                  0,  0,  0,   CmdSouth,              TRUE },
-    { SDLK_RIGHT,                 0,  0,  0,   CmdEast,               TRUE },
-    { SDLK_KP8,                   0,  0,  0,   CmdNorth,              TRUE },
-    { SDLK_KP4,                   0,  0,  0,   CmdWest,               TRUE },
-    { SDLK_KP2,                   0,  0,  0,   CmdSouth,              TRUE },
-    { SDLK_KP6,                   0,  0,  0,   CmdEast,               TRUE },
-    { 'q',                        0,  0,  0,   CmdQuitLevel,          FALSE },
-    { 'p',                        0, +1,  0,   CmdPrevLevel,          FALSE },
-    { 'r',                        0, +1,  0,   CmdSameLevel,          FALSE },
-    { 'n',                        0, +1,  0,   CmdNextLevel,          FALSE },
-    { 'g',                        0, -1,  0,   CmdGotoLevel,          FALSE },
-    { 'q',                       +1,  0,  0,   CmdQuit,               FALSE },
-    { SDLK_PAGEUP,               -1, -1,  0,   CmdPrev10,             FALSE },
-    { 'p',                        0,  0,  0,   CmdPrev,               FALSE },
-    { 'r',                        0,  0,  0,   CmdSame,               FALSE },
-    { 'n',                        0,  0,  0,   CmdNext,               FALSE },
-    { SDLK_PAGEDOWN,             -1, -1,  0,   CmdNext10,             FALSE },
-    { '\b',                      -1, -1,  0,   CmdPauseGame,          FALSE },
-    { '?',			 -1, -1,  0,   CmdHelp,               FALSE },
-    { SDLK_F1,                   -1, -1,  0,   CmdHelp,               FALSE },
-    { 'o',			  0,  0,  0,   CmdStepping,           FALSE },
-    { 'o',			 +1,  0,  0,   CmdSubStepping,        FALSE },
-    { '\t',                       0, -1,  0,   CmdPlayback,           FALSE },
-    { '\t',                      +1, -1,  0,   CmdCheckSolution,      FALSE },
-    { 'x',                        0, +1,  0,   CmdReplSolution,       FALSE },
-    { 'x',                       +1, +1,  0,   CmdKillSolution,       FALSE },
-    { 's',                        0,  0,  0,   CmdSeeScores,          FALSE },
-    { 's',			  0, +1,  0,   CmdSeeSolutionFiles,   FALSE },
-    { 'v',                       +1,  0,  0,   CmdVolumeUp,           FALSE },
-    { 'v',                        0,  0,  0,   CmdVolumeDown,         FALSE },
-    { SDLK_RETURN,               -1, -1,  0,   CmdProceed,            FALSE },
-    { SDLK_KP_ENTER,             -1, -1,  0,   CmdProceed,            FALSE },
-    { ' ',                       -1, -1,  0,   CmdProceed,            FALSE },
-    { 'd',                        0,  0,  0,   CmdDebugCmd1,          FALSE },
-    { 'd',                       +1,  0,  0,   CmdDebugCmd2,          FALSE },
-    { SDLK_UP,                   +1,  0,  0,   CmdCheatNorth,         TRUE },
-    { SDLK_LEFT,                 +1,  0,  0,   CmdCheatWest,          TRUE },
-    { SDLK_DOWN,                 +1,  0,  0,   CmdCheatSouth,         TRUE },
-    { SDLK_RIGHT,                +1,  0,  0,   CmdCheatEast,          TRUE },
-    { SDLK_HOME,                 +1,  0,  0,   CmdCheatHome,          FALSE },
-    { SDLK_F2,                    0,  0,  0,   CmdCheatICChip,        FALSE },
-    { SDLK_F3,                    0,  0,  0,   CmdCheatKeyRed,        FALSE },
-    { SDLK_F4,                    0,  0,  0,   CmdCheatKeyBlue,       FALSE },
-    { SDLK_F5,                    0,  0,  0,   CmdCheatKeyYellow,     FALSE },
-    { SDLK_F6,                    0,  0,  0,   CmdCheatKeyGreen,      FALSE },
-    { SDLK_F7,                    0,  0,  0,   CmdCheatBootsIce,      FALSE },
-    { SDLK_F8,                    0,  0,  0,   CmdCheatBootsSlide,    FALSE },
-    { SDLK_F9,                    0,  0,  0,   CmdCheatBootsFire,     FALSE },
-    { SDLK_F10,                   0,  0,  0,   CmdCheatBootsWater,    FALSE },
-    { '\003',                    -1, -1,  0,   CmdQuit,               FALSE },
-    { SDLK_F4,                    0,  0, +1,   CmdQuit,               FALSE },
-    { 0, 0, 0, 0, 0, 0 }
+static keycmdmap const gamekeycmds[] = {
+    /* Key                     Shift, Ctrl, Alt, Command,             Hold */
+    { TileWorldScanCodeUp,                    0,  0,  0,   CmdNorth,              TRUE },
+    { TileWorldScanCodeLeft,                  0,  0,  0,   CmdWest,               TRUE },
+    { TileWorldScanCodeDown,                  0,  0,  0,   CmdSouth,              TRUE },
+    { TileWorldScanCodeRight,                 0,  0,  0,   CmdEast,               TRUE },
+    { TileWorldScanCodeKP8,                   0,  0,  0,   CmdNorth,              TRUE },
+    { TileWorldScanCodeKP4,                   0,  0,  0,   CmdWest,               TRUE },
+    { TileWorldScanCodeKP2,                   0,  0,  0,   CmdSouth,              TRUE },
+    { TileWorldScanCodeKP6,                   0,  0,  0,   CmdEast,               TRUE },
+    { TileWorldScanCodeQ,                        0,  0,  0,   CmdQuitLevel,          FALSE },
+    { TileWorldScanCodeP,                        0, +1,  0,   CmdPrevLevel,          FALSE },
+    { TileWorldScanCodeR,                        0, +1,  0,   CmdSameLevel,          FALSE },
+    { TileWorldScanCodeN,                        0, +1,  0,   CmdNextLevel,          FALSE },
+    { TileWorldScanCodeG,                        0, -1,  0,   CmdGotoLevel,          FALSE },
+    { TileWorldScanCodeQ,                       +1,  0,  0,   CmdQuit,               FALSE },
+    { TileWorldScanCodePageUp,               -1, -1,  0,   CmdPrev10,             FALSE },
+    { TileWorldScanCodeP,                        0,  0,  0,   CmdPrev,               FALSE },
+    { TileWorldScanCodeR,                        0,  0,  0,   CmdSame,               FALSE },
+    { TileWorldScanCodeN,                        0,  0,  0,   CmdNext,               FALSE },
+    { TileWorldScanCodePageDown,             -1, -1,  0,   CmdNext10,             FALSE },
+    { TileWorldScanCodeBackspace,                      -1, -1,  0,   CmdPauseGame,          FALSE },
+    { TileWorldScanCodeQuestionMark,			 -1, -1,  0,   CmdHelp,               FALSE },
+    { TileWorldScanCodeF1,                   -1, -1,  0,   CmdHelp,               FALSE },
+    { TileWorldScanCodeO,			  0,  0,  0,   CmdStepping,           FALSE },
+    { TileWorldScanCodeO,			 +1,  0,  0,   CmdSubStepping,        FALSE },
+    { TileWorldScanCodeTab,                       0, -1,  0,   CmdPlayback,           FALSE },
+    { TileWorldScanCodeTab,                      +1, -1,  0,   CmdCheckSolution,      FALSE },
+    { TileWorldScanCodeX,                        0, +1,  0,   CmdReplSolution,       FALSE },
+    { TileWorldScanCodeX,                       +1, +1,  0,   CmdKillSolution,       FALSE },
+    { TileWorldScanCodeS,                        0,  0,  0,   CmdSeeScores,          FALSE },
+    { TileWorldScanCodeS,			  0, +1,  0,   CmdSeeSolutionFiles,   FALSE },
+    { TileWorldScanCodeV,                       +1,  0,  0,   CmdVolumeUp,           FALSE },
+    { TileWorldScanCodeV,                        0,  0,  0,   CmdVolumeDown,         FALSE },
+    { TileWorldScanCodeReturn,               -1, -1,  0,   CmdProceed,            FALSE },
+    { TileWorldScanCodeEnter,             -1, -1,  0,   CmdProceed,            FALSE },
+    { TileWorldScanCodeSpace,                       -1, -1,  0,   CmdProceed,            FALSE },
+    { TileWorldScanCodeD,                        0,  0,  0,   CmdDebugCmd1,          FALSE },
+    { TileWorldScanCodeD,                       +1,  0,  0,   CmdDebugCmd2,          FALSE },
+    { TileWorldScanCodeUp,                   +1,  0,  0,   CmdCheatNorth,         TRUE },
+    { TileWorldScanCodeLeft,                 +1,  0,  0,   CmdCheatWest,          TRUE },
+    { TileWorldScanCodeDown,                 +1,  0,  0,   CmdCheatSouth,         TRUE },
+    { TileWorldScanCodeRight,                +1,  0,  0,   CmdCheatEast,          TRUE },
+    { TileWorldScanCodeHome,                 +1,  0,  0,   CmdCheatHome,          FALSE },
+    { TileWorldScanCodeF2,                    0,  0,  0,   CmdCheatICChip,        FALSE },
+    { TileWorldScanCodeF3,                    0,  0,  0,   CmdCheatKeyRed,        FALSE },
+    { TileWorldScanCodeF4,                    0,  0,  0,   CmdCheatKeyBlue,       FALSE },
+    { TileWorldScanCodeF5,                    0,  0,  0,   CmdCheatKeyYellow,     FALSE },
+    { TileWorldScanCodeF6,                    0,  0,  0,   CmdCheatKeyGreen,      FALSE },
+    { TileWorldScanCodeF7,                    0,  0,  0,   CmdCheatBootsIce,      FALSE },
+    { TileWorldScanCodeF8,                    0,  0,  0,   CmdCheatBootsSlide,    FALSE },
+    { TileWorldScanCodeF9,                    0,  0,  0,   CmdCheatBootsFire,     FALSE },
+    { TileWorldScanCodeF10,                   0,  0,  0,   CmdCheatBootsWater,    FALSE },
+    { TileWorldScanCodeQuit,                    -1, -1,  0,   CmdQuit,               FALSE },
+    { TileWorldScanCodeF4,                    0,  0, +1,   CmdQuit,               FALSE },
+    { TileWorldScanCodeNull, 0, 0, 0, 0, 0 }
 };
 
 /* The list of key commands recognized when the program is obtaining
  * input from the user.
  */
 static keycmdmap const inputkeycmds[] = {
-    { SDLK_UP,                   -1, -1,  0,   CmdNorth,              FALSE },
-    { SDLK_LEFT,                 -1, -1,  0,   CmdWest,               FALSE },
-    { SDLK_DOWN,                 -1, -1,  0,   CmdSouth,              FALSE },
-    { SDLK_RIGHT,                -1, -1,  0,   CmdEast,               FALSE },
-    { '\b',                      -1, -1,  0,   CmdWest,               FALSE },
-    { ' ',                       -1, -1,  0,   CmdEast,               FALSE },
-    { SDLK_RETURN,               -1, -1,  0,   CmdProceed,            FALSE },
-    { SDLK_KP_ENTER,             -1, -1,  0,   CmdProceed,            FALSE },
-    { SDLK_ESCAPE,               -1, -1,  0,   CmdQuitLevel,          FALSE },
-    { 'a',                       -1,  0,  0,   'a',                   FALSE },
-    { 'b',                       -1,  0,  0,   'b',                   FALSE },
-    { 'c',                       -1,  0,  0,   'c',                   FALSE },
-    { 'd',                       -1,  0,  0,   'd',                   FALSE },
-    { 'e',                       -1,  0,  0,   'e',                   FALSE },
-    { 'f',                       -1,  0,  0,   'f',                   FALSE },
-    { 'g',                       -1,  0,  0,   'g',                   FALSE },
-    { 'h',                       -1,  0,  0,   'h',                   FALSE },
-    { 'i',                       -1,  0,  0,   'i',                   FALSE },
-    { 'j',                       -1,  0,  0,   'j',                   FALSE },
-    { 'k',                       -1,  0,  0,   'k',                   FALSE },
-    { 'l',                       -1,  0,  0,   'l',                   FALSE },
-    { 'm',                       -1,  0,  0,   'm',                   FALSE },
-    { 'n',                       -1,  0,  0,   'n',                   FALSE },
-    { 'o',                       -1,  0,  0,   'o',                   FALSE },
-    { 'p',                       -1,  0,  0,   'p',                   FALSE },
-    { 'q',                       -1,  0,  0,   'q',                   FALSE },
-    { 'r',                       -1,  0,  0,   'r',                   FALSE },
-    { 's',                       -1,  0,  0,   's',                   FALSE },
-    { 't',                       -1,  0,  0,   't',                   FALSE },
-    { 'u',                       -1,  0,  0,   'u',                   FALSE },
-    { 'v',                       -1,  0,  0,   'v',                   FALSE },
-    { 'w',                       -1,  0,  0,   'w',                   FALSE },
-    { 'x',                       -1,  0,  0,   'x',                   FALSE },
-    { 'y',                       -1,  0,  0,   'y',                   FALSE },
-    { 'z',                       -1,  0,  0,   'z',                   FALSE },
-    { '\003',                    -1, -1,  0,   CmdQuit,               FALSE },
-    { SDLK_F4,                    0,  0, +1,   CmdQuit,               FALSE },
-    { 0, 0, 0, 0, 0, 0 }
+    { TileWorldScanCodeUp,                   -1, -1,  0,   CmdNorth,              FALSE },
+    { TileWorldScanCodeLeft,                 -1, -1,  0,   CmdWest,               FALSE },
+    { TileWorldScanCodeDown,                 -1, -1,  0,   CmdSouth,              FALSE },
+    { TileWorldScanCodeRight,                -1, -1,  0,   CmdEast,               FALSE },
+    { TileWorldScanCodeBackspace,                      -1, -1,  0,   CmdWest,               FALSE },
+    { TileWorldScanCodeSpace,                       -1, -1,  0,   CmdEast,               FALSE },
+    { TileWorldScanCodeReturn,               -1, -1,  0,   CmdProceed,            FALSE },
+    { TileWorldScanCodeEnter,             -1, -1,  0,   CmdProceed,            FALSE },
+    { TileWorldScanCodeEscape,               -1, -1,  0,   CmdQuitLevel,          FALSE },
+    { TileWorldScanCodeA,                       -1,  0,  0,   'a',                   FALSE },
+    { TileWorldScanCodeB,                       -1,  0,  0,   'b',                   FALSE },
+    { TileWorldScanCodeC,                       -1,  0,  0,   'c',                   FALSE },
+    { TileWorldScanCodeD,                       -1,  0,  0,   'd',                   FALSE },
+    { TileWorldScanCodeE,                       -1,  0,  0,   'e',                   FALSE },
+    { TileWorldScanCodeF,                       -1,  0,  0,   'f',                   FALSE },
+    { TileWorldScanCodeG,                       -1,  0,  0,   'g',                   FALSE },
+    { TileWorldScanCodeH,                       -1,  0,  0,   'h',                   FALSE },
+    { TileWorldScanCodeI,                       -1,  0,  0,   'i',                   FALSE },
+    { TileWorldScanCodeJ,                       -1,  0,  0,   'j',                   FALSE },
+    { TileWorldScanCodeK,                       -1,  0,  0,   'k',                   FALSE },
+    { TileWorldScanCodeL,                       -1,  0,  0,   'l',                   FALSE },
+    { TileWorldScanCodeM,                       -1,  0,  0,   'm',                   FALSE },
+    { TileWorldScanCodeN,                       -1,  0,  0,   'n',                   FALSE },
+    { TileWorldScanCodeO,                       -1,  0,  0,   'o',                   FALSE },
+    { TileWorldScanCodeP,                       -1,  0,  0,   'p',                   FALSE },
+    { TileWorldScanCodeQ,                       -1,  0,  0,   'q',                   FALSE },
+    { TileWorldScanCodeR,                       -1,  0,  0,   'r',                   FALSE },
+    { TileWorldScanCodeS,                       -1,  0,  0,   's',                   FALSE },
+    { TileWorldScanCodeT,                       -1,  0,  0,   't',                   FALSE },
+    { TileWorldScanCodeU,                       -1,  0,  0,   'u',                   FALSE },
+    { TileWorldScanCodeV,                       -1,  0,  0,   'v',                   FALSE },
+    { TileWorldScanCodeW,                       -1,  0,  0,   'w',                   FALSE },
+    { TileWorldScanCodeX,                       -1,  0,  0,   'x',                   FALSE },
+    { TileWorldScanCodeY,                       -1,  0,  0,   'y',                   FALSE },
+    { TileWorldScanCodeZ,                       -1,  0,  0,   'z',                   FALSE },
+    { TileWorldScanCodeQuit,                    -1, -1,  0,   CmdQuit,               FALSE },
+    { TileWorldScanCodeF4,                    0,  0, +1,   CmdQuit,               FALSE },
+    { TileWorldScanCodeNull, 0, 0, 0, 0, 0 }
 };
+
+/* The complete array of key states.
+ */
+static char keystates[TileWorldScanCode_count];
 
 /* The current map of key commands.
  */
@@ -169,9 +239,78 @@ static keycmdmap const *keycmds = gamekeycmds;
  */
 static int mergeable[CmdKeyMoveLast + 1];
 
+#define SCANCODE_CASE(casevar, resultvar) case casevar:\
+return resultvar;
+
 /*
  * Running the keyboard's state machine.
  */
+static TileWorldScanCode _keyEventScanCodeToScanCode(int scancode) {
+    switch (scancode) {
+        case SDLK_LSHIFT: return TileWorldScanCodeLeftShift;
+        case SDLK_RSHIFT: return TileWorldScanCodeRightShift;
+        case SDLK_LCTRL: return TileWorldScanCodeLeftControl;
+        case SDLK_RCTRL: return TileWorldScanCodeRightControl;
+        case SDLK_LALT: return TileWorldScanCodeLeftAlt;
+        case SDLK_RALT: return TileWorldScanCodeRightAlt;
+        case SDLK_CAPSLOCK: return TileWorldScanCodeCapsLock;
+        case SDLK_MODE: return TileWorldScanCodeMode;
+        case SDLK_LEFT: return TileWorldScanCodeLeft;
+        case SDLK_RIGHT: return TileWorldScanCodeRight;
+        case SDLK_UP: return TileWorldScanCodeUp;
+        case SDLK_DOWN: return TileWorldScanCodeDown;
+        case ' ': return TileWorldScanCodeBackspace;
+        case '\b': return TileWorldScanCodeBackspace;
+        case '?': return TileWorldScanCodeQuestionMark;
+        case '\t': return TileWorldScanCodeTab;
+        case '\003': return TileWorldScanCodeQuit;
+        case 'a': return TileWorldScanCodeA;
+        case 'b': return TileWorldScanCodeB;
+        case 'c': return TileWorldScanCodeC;
+        case 'd': return TileWorldScanCodeD;
+        case 'e': return TileWorldScanCodeE;
+        case 'f': return TileWorldScanCodeF;
+        case 'g': return TileWorldScanCodeG;
+        case 'h': return TileWorldScanCodeH;
+        case 'i': return TileWorldScanCodeI;
+        case 'j': return TileWorldScanCodeJ;
+        case 'k': return TileWorldScanCodeK;
+        case 'l': return TileWorldScanCodeL;
+        case 'm': return TileWorldScanCodeM;
+        case 'n': return TileWorldScanCodeN;
+        case 'o': return TileWorldScanCodeO;
+        case 'p': return TileWorldScanCodeP;
+        case 'q': return TileWorldScanCodeQ;
+        case 'r': return TileWorldScanCodeR;
+        case 's': return TileWorldScanCodeS;
+        case 't': return TileWorldScanCodeT;
+        case 'u': return TileWorldScanCodeU;
+        case 'v': return TileWorldScanCodeV;
+        case 'w': return TileWorldScanCodeW;
+        case 'x': return TileWorldScanCodeX;
+        case 'y': return TileWorldScanCodeY;
+        case 'z': return TileWorldScanCodeZ;
+        case SDLK_KP_8: return TileWorldScanCodeKP8;
+        case SDLK_KP_4: return TileWorldScanCodeKP4;
+        case SDLK_KP_2: return TileWorldScanCodeKP2;
+        case SDLK_KP_6: return TileWorldScanCodeKP6;
+        case SDLK_F1: return TileWorldScanCodeF1;
+        case SDLK_F2: return TileWorldScanCodeF2;
+        case SDLK_F3: return TileWorldScanCodeF3;
+        case SDLK_F4: return TileWorldScanCodeF4;
+        case SDLK_F5: return TileWorldScanCodeF5;
+        case SDLK_F6: return TileWorldScanCodeF6;
+        case SDLK_F7: return TileWorldScanCodeF7;
+        case SDLK_F8: return TileWorldScanCodeF8;
+        case SDLK_F9: return TileWorldScanCodeF9;
+        case SDLK_F10: return TileWorldScanCodeF10;
+        case SDLK_RETURN: return TileWorldScanCodeReturn;
+        case SDLK_KP_ENTER: return TileWorldScanCodeEnter;
+        case SDLK_HOME: return TileWorldScanCodeHome;
+        default:
+            return TileWorldScanCodeUnknown;
+    }
+}
 
 /* This callback is called whenever the state of any keyboard key
  * changes. It records this change in the keystates array. The key can
@@ -180,33 +319,34 @@ static int mergeable[CmdKeyMoveLast + 1];
  * current behavior settings. Shift-type keys are always either on or
  * off.
  */
-static void _keyeventcallback(int scancode, int down)
+static void _keyeventcallback(int sdlk_scancode, int down)
 {
-    switch (scancode) {
+    TileWorldScanCode scancode = _keyEventScanCodeToScanCode(sdlk_scancode);
+    switch (sdlk_scancode) {
       case SDLK_LSHIFT:
       case SDLK_RSHIFT:
       case SDLK_LCTRL:
       case SDLK_RCTRL:
       case SDLK_LALT:
       case SDLK_RALT:
-      case SDLK_LMETA:
-      case SDLK_RMETA:
-      case SDLK_NUMLOCK:
+//      case SDLK_LMETA:
+//      case SDLK_RMETA:
+//      case SDLK_NUMLOCK:
       case SDLK_CAPSLOCK:
       case SDLK_MODE:
-	keystates[scancode] = down ? KS_ON : KS_OFF;
-	break;
+        keystates[scancode] = down ? KS_ON : KS_OFF;
+        break;
       default:
-	if (scancode < SDLK_LAST) {
-	    if (down) {
-		keystates[scancode] = keystates[scancode] == KS_OFF ?
-						KS_PRESSED : KS_REPEATING;
-	    } else {
-		keystates[scancode] = keystates[scancode] == KS_PRESSED ?
-						KS_STRUCK : KS_OFF;
-	    }
-	}
-	break;
+//        if (scancode < SDLK_LAST) {
+            if (down) {
+            keystates[scancode] = keystates[scancode] == KS_OFF ?
+                            KS_PRESSED : KS_REPEATING;
+            } else {
+            keystates[scancode] = keystates[scancode] == KS_PRESSED ?
+                            KS_STRUCK : KS_OFF;
+            }
+//        }
+        break;
     }
 }
 
@@ -218,12 +358,15 @@ static void restartkeystates(void)
     int		count, n;
 
     memset(keystates, KS_OFF, sizeof keystates);
-    keyboard = SDL_GetKeyState(&count);
-    if (count > SDLK_LAST)
-	count = SDLK_LAST;
-    for (n = 0 ; n < count ; ++n)
-	if (keyboard[n])
-	    _keyeventcallback(n, TRUE);
+    keyboard = SDL_GetKeyboardState(&count);
+//    if (count > SDLK_LAST) {
+//        count = SDLK_LAST;
+//    }
+    for (n = 0 ; n < count ; ++n) {
+        if (keyboard[n]) {
+            _keyeventcallback(n, TRUE);
+        }
+    }
 }
 
 /* Update the key states. This is done at the start of each polling
@@ -263,8 +406,9 @@ static void resetkeystates(void)
     int		n;
 
     newstate = joystickstyle ? joystick_trans : keyboard_trans;
-    for (n = 0 ; n < SDLK_LAST ; ++n)
-	keystates[n] = newstate[(int)keystates[n]];
+    for (n = 0; n < TileWorldScanCode_count; ++n) {
+        keystates[n] = newstate[(int)keystates[n]];
+    }
 }
 
 /*
@@ -293,11 +437,12 @@ static int retrievemousecommand(void)
 
     switch (mouseinfo.state) {
       case KS_PRESSED:
-	mouseinfo.state = KS_OFF;
-	if (mouseinfo.button == SDL_BUTTON_WHEELDOWN)
-	    return CmdNext;
-	if (mouseinfo.button == SDL_BUTTON_WHEELUP)
-	    return CmdPrev;
+        mouseinfo.state = KS_OFF;
+        // Commenting this out for now, not sure how to respond to mouse wheel events
+        //	if (mouseinfo.button == SDL_BUTTON_WHEELDOWN)
+        //	    return CmdNext;
+        //	if (mouseinfo.button == SDL_BUTTON_WHEELUP)
+        //	    return CmdPrev;
 	if (mouseinfo.button == SDL_BUTTON_LEFT) {
 	    n = windowmappos(mouseinfo.x, mouseinfo.y);
 	    if (n >= 0) {
@@ -336,10 +481,11 @@ int anykey(void)
     for (;;) {
 	resetkeystates();
 	eventupdate(TRUE);
-	for (n = 0 ; n < SDLK_LAST ; ++n)
+	for (n = 0 ; n < TileWorldScanCode_count ; ++n)
 	    if (keystates[n] == KS_STRUCK || keystates[n] == KS_PRESSED
-					  || keystates[n] == KS_REPEATING)
-		return n != 'q' && n != SDLK_ESCAPE;
+            || keystates[n] == KS_REPEATING) {
+            return n != TileWorldScanCodeQ && n != TileWorldScanCodeEscape;
+        }
     }
 }
 
@@ -362,20 +508,20 @@ int input(int wait)
 	eventupdate(wait);
 
 	cmd1 = cmd = 0;
-	for (kc = keycmds ; kc->scancode ; ++kc) {
+	for (kc = keycmds ; kc->scancode != TileWorldScanCodeNull ; ++kc) {
 	    n = keystates[kc->scancode];
 	    if (!n)
 		continue;
 	    if (kc->shift != -1)
 		if (kc->shift !=
-			(keystates[SDLK_LSHIFT] || keystates[SDLK_RSHIFT]))
+			(keystates[TileWorldScanCodeLeftShift] || keystates[TileWorldScanCodeRightShift]))
 		    continue;
 	    if (kc->ctl != -1)
 		if (kc->ctl !=
-			(keystates[SDLK_LCTRL] || keystates[SDLK_RCTRL]))
+			(keystates[TileWorldScanCodeLeftControl] || keystates[TileWorldScanCodeRightControl]))
 		    continue;
 	    if (kc->alt != -1)
-		if (kc->alt != (keystates[SDLK_LALT] || keystates[SDLK_RALT]))
+		if (kc->alt != (keystates[TileWorldScanCodeLeftAlt] || keystates[TileWorldScanCodeRightAlt]))
 		    continue;
 
 	    if (n == KS_PRESSED || (kc->hold && n == KS_DOWN)) {
@@ -414,10 +560,13 @@ int input(int wait)
  */
 int setkeyboardrepeat(int enable)
 {
-    if (enable)
-	return SDL_EnableKeyRepeat(500, 75) == 0;
-    else
-	return SDL_EnableKeyRepeat(0, 0) == 0;
+    // TODO: Prob reenable
+//    if (enable) {
+//        return SDL_EnableKeyRepeat(500, 75) == 0;
+//    } else {
+//        return SDL_EnableKeyRepeat(0, 0) == 0;
+//    }
+    return 0;
 }
 
 /* Turn joystick behavior mode on or off. In joystick-behavior mode,
@@ -455,7 +604,7 @@ int _sdlinputinitialize(void)
     mergeable[CmdWest] = mergeable[CmdEast] = CmdNorth | CmdSouth;
 
     setkeyboardrepeat(TRUE);
-    SDL_EnableUNICODE(TRUE);
+//    SDL_EnableUNICODE(TRUE);
     return TRUE;
 }
 
